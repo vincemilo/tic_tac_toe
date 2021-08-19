@@ -13,7 +13,7 @@ class Board
 
   def place(square)
     if @squares[square] == 'X' || @squares[square] == 'O'
-      puts "That square is occupied. Please try again."
+      puts 'That square is occupied. Please try again.'
     elsif @player_turn == 1
       @squares[square] = 'X'
       show_board
@@ -26,7 +26,7 @@ class Board
   end
 
   def show_board
-    puts "Behold the board:"
+    puts 'Behold the board:'
     puts "#{@squares[0]} #{@squares[1]} #{@squares[2]}"
     puts "#{@squares[3]} #{@squares[4]} #{@squares[5]}"
     puts "#{@squares[6]} #{@squares[7]} #{@squares[8]}"
@@ -34,15 +34,15 @@ class Board
 
   def prompt(player)
     if player == 'Player 1'
-      puts "Player 1, where would you like to place your X?"
+      puts 'Player 1, where would you like to place your X?'
     else
-      puts "Player 2, where would you like to place your O?"
+      puts 'Player 2, where would you like to place your O?'
     end
 
     player = gets.chomp.to_i
 
     if player < 1 || player > 9
-      puts "Invalid entry."
+      puts 'Invalid entry.'
     else
       player -= 1
       winner?(player)
@@ -54,9 +54,13 @@ class Board
     @winning_combos.each_with_index do |v, i|
       v.each_with_index do |e, j|
         if @player_turn == 1
-          @winning_combos[i][j] = 'X' if e.eql? num
+          if e == num
+            winning_combos[i][j] = 'X'
+          end
         else
-          @winning_combos[i][j] = 'O' if e.eql? num
+          if e == num
+            @winning_combos[i][j] = 'O'
+          end
         end
         if v == %w[X X X]
           @winner = 'Player 1'
