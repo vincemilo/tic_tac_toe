@@ -9,20 +9,26 @@ class Board
     @winner = nil
   end
 
-  private
-
   def place(square)
-    if @squares[square] == 'X' || @squares[square] == 'O'
-      puts 'That square is occupied. Please try again.'
-    elsif @player_turn == 1
+    update_board(square) if valid_move?(square)
+  end
+
+  def valid_move?(square)
+    return true unless @squares[square] == 'X' || @squares[square] == 'O'
+
+    puts 'That square is occupied. Please try again.'
+    false
+  end
+
+  def update_board(square)
+    if @player_turn == 1
       @squares[square] = 'X'
-      show_board
       @player_turn = 2
     else
       @squares[square] = 'O'
-      show_board
       @player_turn = 1
     end
+    show_board
   end
 
   def show_board
@@ -71,10 +77,9 @@ class Board
     end
   end
 
-  public
-
   def play_game
     show_board
+    puts 'Welcome to Tic-Tac-Toe!'
 
     @keep_going = 0
 
@@ -92,5 +97,7 @@ class Board
   end
 end
 
-game = Board.new
-game.play_game
+# game = Board.new
+# #game.play_game
+# game.place(1)
+# p game.squares
