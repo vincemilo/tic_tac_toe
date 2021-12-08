@@ -10,7 +10,14 @@ class Board
   end
 
   def place(square)
-    update_board(square) if valid_move?(square)
+    return unless valid_move?(square)
+
+    update_board(square)
+    @player_turn = if @player_turn == 1
+                     2
+                   else
+                     1
+                   end
   end
 
   def valid_move?(square)
@@ -21,14 +28,23 @@ class Board
   end
 
   def update_board(square)
-    if @player_turn == 1
-      @squares[square] = 'X'
-      @player_turn = 2
-    else
-      @squares[square] = 'O'
-      @player_turn = 1
-    end
+    @squares[square] = if @player_turn == 1
+                         'X'
+                       else
+                         'O'
+                       end
     show_board
+    return unless winner?
+
+    game_over
+  end
+
+  def game_over
+    @winner = if @player_turn == 1
+                'Player 1'
+              else
+                'Player 2'
+              end
   end
 
   def show_board
@@ -38,66 +54,50 @@ class Board
     puts "#{@squares[6]} #{@squares[7]} #{@squares[8]}"
   end
 
-  def prompt(player)
-    if player == 'Player 1'
+  def prompt
+    display
+    num = gets.chomp.to_i
+
+    if num < 1 || num > 9 || num =~ /\D/
+      puts 'Invalid entry.'
+    else
+      num -= 1
+      place(num)
+    end
+  end
+
+  def display
+    if @player_turn == 1
       puts 'Player 1, where would you like to place your X?'
     else
       puts 'Player 2, where would you like to place your O?'
     end
-
-    player = gets.chomp.to_i
-
-    if player < 1 || player > 9
-      puts 'Invalid entry.'
-    else
-      player -= 1
-      winner?(player)
-      place(player)
-    end
   end
 
-  def winner?(num)
-    @winning_combos.each_with_index do |v, i|
-      v.each_with_index do |e, j|
-        if @player_turn == 1
-          if e == num
-            winning_combos[i][j] = 'X'
-          end
-        else
-          if e == num
-            @winning_combos[i][j] = 'O'
-          end
-        end
-        if v == %w[X X X]
-          @winner = 'Player 1'
-        elsif v == %w[O O O]
-          @winner = 'Player 2'
-        end
-      end
+  def winner?
+    @winning_combos.any? do |combo|
+      [@squares[combo[0]], @squares[combo[1]], @squares[combo[2]]].uniq.length == 1
     end
   end
 
   def play_game
-    show_board
     puts 'Welcome to Tic-Tac-Toe!'
-
+    show_board
     @keep_going = 0
 
     while @keep_going < 10
       if @winner
         puts "#{winner} wins!"
         @keep_going = 10
-      elsif @player_turn == 1
-        prompt('Player 1')
       else
-        prompt('Player 2')
+        prompt
       end
       @keep_going += 1
     end
   end
 end
 
-# game = Board.new
-# #game.play_game
+game = Board.new
+game.play_game
 # game.place(1)
 # p game.squares
