@@ -1,5 +1,5 @@
 class Board
-  attr_reader :squares, :player_turn, :winning_combos, :winner
+  attr_reader :squares, :player_turn, :winning_combos, :winner, :counter
 
   def initialize
     @squares = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -7,6 +7,7 @@ class Board
     @winning_combos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7],
                        [2, 5, 8], [0, 4, 8], [2, 4, 6]]
     @winner = nil
+    @counter = 0
   end
 
   def place(square)
@@ -83,16 +84,15 @@ class Board
   def play_game
     puts 'Welcome to Tic-Tac-Toe!'
     show_board
-    @keep_going = 0
 
-    while @keep_going < 10
+    while @counter < 9
       if @winner
-        puts "#{winner} wins!"
-        @keep_going = 10
+        puts "#{@winner} wins!"
+        break
       else
         prompt
+        @counter += 1
       end
-      @keep_going += 1
     end
   end
 end

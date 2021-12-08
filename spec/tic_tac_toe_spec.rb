@@ -113,6 +113,36 @@ describe Board do
   end
 
   describe '#play_game' do
-    # to do
+    before do
+      allow(board).to receive(:show_board)
+      allow(board).to receive(:puts)
+      allow(board).to receive(:prompt)
+    end
+
+    context 'When there is not a winner and 9 moves have not happened' do
+      it 'the loop continues' do
+        board.instance_variable_set(:@counter, 7)
+        expect(board).to receive(:prompt).twice
+        board.play_game
+      end
+    end
+
+    context 'When there is a winner' do
+      it 'the loop ends and victory message is displayed' do
+        board.instance_variable_set(:@winner, 'Player 1')
+        victory_msg = 'Player 1 wins!'
+        expect(board).to_not receive(:prompt)
+        expect(board).to receive(:puts).with(victory_msg)
+        board.play_game
+      end
+    end
+
+    context 'When there is not a winner but 9 moves have happened' do
+      it 'the loop ends' do
+        board.instance_variable_set(:@counter, 9)
+        expect(board).to_not receive(:prompt)
+        board.play_game
+      end
+    end
   end
 end
